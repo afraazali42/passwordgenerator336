@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator 336</title>
+  <meta name="description" content="Strong, random passwords. Generated in your browser, never sent anywhere.">
+  <meta name="theme-color" content="#1a1a1a">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231a1a1a'/%3E%3Ctext x='50' y='74' font-size='72' font-family='Georgia,serif' fill='%231ee5e5' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+
+  <style>
+    :root {
+      --accent: #1ee5e5;
+      --bg: #1a1a1a;
+      --text: #e8e8e8;
+      --muted: #8a8a8a;
+      --border: #4a4a4a;
+      --on-accent: #0d0d0d;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { background: var(--bg); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 40px 28px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* Wordmark */
+    .wordmark {
+      font-family: Georgia, "Times New Roman", Times, serif;
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      margin: 0 0 24px;
+    }
+
+    /* Password output (with inline icon buttons) */
+    .output {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+    }
+    .password {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 16px;
+      padding: 14px 16px;
+    }
+    .password:focus { outline: none; }
+
+    .icon-btn {
+      flex: none;
+      width: 52px;
+      border: 0;
+      border-left: 1px solid var(--border);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-btn svg { display: block; width: 20px; height: 20px; }
+    .icon-btn:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+
+    .toast {
+      position: absolute;
+      top: -26px;
+      right: 0;
+      color: var(--accent);
+      font-size: 12px;
+      font-style: italic;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    /* Length + strength section (separated from the settings list) */
+    .length-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      margin: 22px 0 22px;
+    }
+    .strength { font-size: 13px; }
+    .strength-label { color: var(--muted); }
+    .strength-value { color: var(--accent); margin-left: 4px; }
+
+    /* Advanced (More settings) disclosure */
+    .advanced { margin-top: 18px; }
+    .advanced summary {
+      cursor: pointer;
+      padding: 8px 0;
+      color: var(--muted);
+      font-size: 13px;
+      list-style: none;
+      user-select: none;
+    }
+    .advanced summary::-webkit-details-marker { display: none; }
+    .advanced summary::before { content: "+ "; color: var(--accent); }
+    .advanced[open] summary::before { content: "− "; }
+    .advanced[open] summary { margin-bottom: 6px; }
+
+    /* Small number input (used for bulk count + history count) */
+    .count-input {
+      flex: none;
+      width: 44px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      color: var(--accent);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 14px;
+      text-align: right;
+      padding: 2px 0;
+    }
+    .count-input:focus { outline: none; border-bottom-color: var(--accent); }
+    .count-input::-webkit-outer-spin-button,
+    .count-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .count-input { -moz-appearance: textfield; }
+
+    /* Text button (cyan link-style action) */
+    .text-btn {
+      background: transparent;
+      border: 0;
+      color: var(--accent);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .text-btn:hover { text-decoration: underline; }
+
+    /* Bulk + History sections */
+    .bulk-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+    }
+    .bulk-controls .count-label { color: var(--muted); font-size: 13px; }
+    .bulk-textarea {
+      display: block;
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      padding: 10px 12px;
+      margin-top: 6px;
+    }
+    .bulk-textarea:focus { outline: none; border-color: var(--accent); }
+    .bulk-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 0 0;
+    }
+
+    .history-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-item:last-child { border-bottom: 0; }
+    .history-text {
+      flex: 1;
+      min-width: 0;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      color: var(--text);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .history-clear-row {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 0 0;
+    }
+
+    /* Settings — one row each */
+    .settings {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .setting {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .setting:last-child { border-bottom: 0; }
+
+    .setting-label {
+      flex: none;
+      font-weight: 500;
+    }
+    .setting-row {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Editable character set */
+    .charset {
+      flex: 1 1 auto;
+      min-width: 0;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      padding: 4px 0;
+      text-align: right;
+    }
+    .charset:focus {
+      outline: none;
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Length slider + editable number */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0;
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0;
+      cursor: pointer;
+    }
+    .length-value {
+      flex: none;
+      color: var(--accent);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      width: 36px;
+      text-align: right;
+      font-size: 14px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      padding: 2px 0;
+    }
+    .length-value:focus { outline: none; border-bottom-color: var(--accent); }
+    .length-value::-webkit-outer-spin-button,
+    .length-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .length-value { -moz-appearance: textfield; }
+
+    /* Sharp-cornered toggle */
+    .toggle {
+      position: relative;
+      flex: none;
+      width: 36px;
+      height: 18px;
+      padding: 0;
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 14px;
+      height: 14px;
+      background: var(--muted);
+    }
+    .toggle.on { background: var(--accent); border-color: var(--accent); }
+    .toggle.on::after { background: var(--on-accent); transform: translateX(18px); }
+
+    @media (max-width: 600px) {
+      body { padding: 32px 20px 50px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="wordmark">Password Generator 336</h1>
+
+    <div class="output">
+      <input id="password" class="password" type="text" readonly spellcheck="false"
+             aria-label="Generated password" autocomplete="off">
+      <button id="refresh" class="icon-btn" type="button" title="Generate a new password" aria-label="Generate a new password">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-3.13-6.84"/>
+          <polyline points="21 3 21 8 16 8"/>
+        </svg>
+      </button>
+      <button id="copy" class="icon-btn" type="button" title="Copy to clipboard" aria-label="Copy password to clipboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect width="14" height="14" x="8" y="8"/>
+          <path d="M5 15H2V2h13v3"/>
+        </svg>
+      </button>
+      <span id="toast" class="toast" role="status" aria-live="polite"></span>
+    </div>
+
+    <section class="length-section">
+      <label for="length" class="setting-label">Length</label>
+      <input id="length" type="range" min="4" max="64" value="25">
+      <input id="lengthValue" class="length-value" type="number" min="4" max="64" value="25" aria-label="Password length (number)">
+      <span class="strength">
+        <span class="strength-label">Strength —</span><span id="strengthLabel" class="strength-value">—</span>
+      </span>
+    </section>
+
+    <ul class="settings">
+      <li class="setting">
+        <span class="setting-label">Uppercase</span>
+        <div class="setting-row">
+          <input id="upperChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Uppercase characters" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
+          <button id="upper" class="toggle on" type="button" aria-pressed="true" aria-label="Include uppercase"></button>
+        </div>
+      </li>
+      <li class="setting">
+        <span class="setting-label">Lowercase</span>
+        <div class="setting-row">
+          <input id="lowerChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Lowercase characters" value="abcdefghijklmnopqrstuvwxyz">
+          <button id="lower" class="toggle on" type="button" aria-pressed="true" aria-label="Include lowercase"></button>
+        </div>
+      </li>
+      <li class="setting">
+        <span class="setting-label">Numbers</span>
+        <div class="setting-row">
+          <input id="numberChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Number characters" value="0123456789">
+          <button id="number" class="toggle on" type="button" aria-pressed="true" aria-label="Include numbers"></button>
+        </div>
+      </li>
+      <li class="setting">
+        <span class="setting-label">Symbols</span>
+        <div class="setting-row">
+          <input id="symbolChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Symbol characters" value="!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[]^_`{|}~">
+          <button id="symbol" class="toggle on" type="button" aria-pressed="true" aria-label="Include symbols"></button>
+        </div>
+      </li>
+    </ul>
+
+    <details class="advanced">
+      <summary>More settings</summary>
+      <ul class="settings">
+        <li class="setting">
+          <span class="setting-label">Exclude</span>
+          <div class="setting-row">
+            <input id="similarChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Characters to exclude" value="il1LoO0|`'-_&quot;:;.,()[]{}/\&lt;&gt;">
+            <button id="excludeSimilar" class="toggle" type="button" aria-pressed="false" aria-label="Exclude characters"></button>
+          </div>
+        </li>
+        <li class="setting">
+          <span class="setting-label">Start with letter</span>
+          <div class="setting-row">
+            <button id="startWithLetter" class="toggle on" type="button" aria-pressed="true" aria-label="Start password with a letter"></button>
+          </div>
+        </li>
+        <li class="setting">
+          <span class="setting-label">Allow duplicates</span>
+          <div class="setting-row">
+            <button id="allowDuplicates" class="toggle on" type="button" aria-pressed="true" aria-label="Allow duplicate characters"></button>
+          </div>
+        </li>
+        <li class="setting">
+          <span class="setting-label">Allow sequential</span>
+          <div class="setting-row">
+            <button id="allowSequential" class="toggle on" type="button" aria-pressed="true" aria-label="Allow sequential characters"></button>
+          </div>
+        </li>
+        <li class="setting">
+          <span class="setting-label">Auto-select</span>
+          <div class="setting-row">
+            <button id="autoSelect" class="toggle on" type="button" aria-pressed="true" aria-label="Auto-select password after generation"></button>
+          </div>
+        </li>
+        <li class="setting">
+          <span class="setting-label">Settings URL <em style="color:var(--muted);font-style:normal;font-size:12px;">(bookmark to reload these settings)</em></span>
+          <div class="setting-row">
+            <button id="copySettingsUrl" class="text-btn" type="button">Copy</button>
+          </div>
+        </li>
+      </ul>
+    </details>
+
+    <details class="advanced">
+      <summary>Generate in bulk</summary>
+      <div class="bulk-controls">
+        <span class="count-label">Generate</span>
+        <input id="bulkCount" type="number" min="1" max="100" value="10" class="count-input" aria-label="Bulk count">
+        <span class="count-label">passwords</span>
+        <button id="bulkGenerate" class="text-btn" type="button">Go →</button>
+      </div>
+      <textarea id="bulkResults" class="bulk-textarea" readonly placeholder="Click Go to generate"></textarea>
+      <div class="bulk-actions">
+        <button id="bulkCopy" class="text-btn" type="button">Copy all</button>
+      </div>
+    </details>
+
+    <details class="advanced">
+      <summary>History (<span id="historySummaryCount">0</span>)</summary>
+      <ul class="settings">
+        <li class="setting">
+          <span class="setting-label">Save history (last <input id="historyCount" type="number" min="1" max="100" value="10" class="count-input" aria-label="History size">)</span>
+          <div class="setting-row">
+            <button id="saveHistory" class="toggle" type="button" aria-pressed="false" aria-label="Save password history"></button>
+          </div>
+        </li>
+      </ul>
+      <ul id="historyList" class="history-list"></ul>
+      <div class="history-clear-row">
+        <button id="historyClear" class="text-btn" type="button">Clear (also wipes saved data)</button>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    "use strict";
+
+    const state = {
+      upper: true, lower: true, number: true, symbol: true, excludeSimilar: false,
+      startWithLetter: true,
+      allowDuplicates: true,
+      allowSequential: true,
+      autoSelect: true,
+      saveHistory: false,
+      historyCount: 10,
+    };
+
+    const el = {
+      password: document.getElementById("password"),
+      length: document.getElementById("length"),
+      lengthValue: document.getElementById("lengthValue"),
+      upper: document.getElementById("upper"),
+      lower: document.getElementById("lower"),
+      number: document.getElementById("number"),
+      symbol: document.getElementById("symbol"),
+      excludeSimilar: document.getElementById("excludeSimilar"),
+      startWithLetter: document.getElementById("startWithLetter"),
+      allowDuplicates: document.getElementById("allowDuplicates"),
+      allowSequential: document.getElementById("allowSequential"),
+      autoSelect: document.getElementById("autoSelect"),
+      upperChars: document.getElementById("upperChars"),
+      lowerChars: document.getElementById("lowerChars"),
+      numberChars: document.getElementById("numberChars"),
+      symbolChars: document.getElementById("symbolChars"),
+      similarChars: document.getElementById("similarChars"),
+      strengthLabel: document.getElementById("strengthLabel"),
+      refresh: document.getElementById("refresh"),
+      copy: document.getElementById("copy"),
+      toast: document.getElementById("toast"),
+      saveHistory: document.getElementById("saveHistory"),
+      historyCount: document.getElementById("historyCount"),
+      bulkCount: document.getElementById("bulkCount"),
+      bulkGenerate: document.getElementById("bulkGenerate"),
+      bulkResults: document.getElementById("bulkResults"),
+      bulkCopy: document.getElementById("bulkCopy"),
+      historyList: document.getElementById("historyList"),
+      historySummaryCount: document.getElementById("historySummaryCount"),
+      historyClear: document.getElementById("historyClear"),
+      copySettingsUrl: document.getElementById("copySettingsUrl"),
+    };
+
+    // Default character sets — anything not matching the default goes into the shareable URL
+    const DEFAULT_CHARS = {
+      upperChars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      lowerChars: "abcdefghijklmnopqrstuvwxyz",
+      numberChars: "0123456789",
+      symbolChars: "!\"#$%&'()*+,-./:;<=>?@[]^_`{|}~",
+      similarChars: "il1LoO0|`'-_\":;.,()[]{}/\\<>",
+    };
+    // state-key → short URL-param-key
+    const URL_TOGGLES = {
+      upper: "upper", lower: "lower", number: "number", symbol: "symbol",
+      excludeSimilar: "exclude", startWithLetter: "letter",
+      allowDuplicates: "dup", allowSequential: "seq", autoSelect: "select",
+    };
+
+    function buildSettingsURL() {
+      const params = new URLSearchParams();
+      params.set("len", String(el.length.value));
+      for (const [stateKey, urlKey] of Object.entries(URL_TOGGLES)) {
+        params.set(urlKey, state[stateKey] ? "1" : "0");
+      }
+      for (const [elKey, def] of Object.entries(DEFAULT_CHARS)) {
+        if (el[elKey].value !== def) params.set(elKey, el[elKey].value);
+      }
+      return location.origin + location.pathname + "?" + params.toString();
+    }
+
+    function loadSettingsFromURL() {
+      const params = new URLSearchParams(location.search);
+      if ([...params.keys()].length === 0) return;
+      if (params.has("len")) {
+        const n = parseInt(params.get("len"), 10);
+        if (!isNaN(n) && n >= MIN_LEN && n <= MAX_LEN) {
+          el.length.value = String(n);
+          el.lengthValue.value = String(n);
+        }
+      }
+      for (const [stateKey, urlKey] of Object.entries(URL_TOGGLES)) {
+        if (!params.has(urlKey)) continue;
+        state[stateKey] = params.get(urlKey) === "1";
+        const btn = el[stateKey];
+        btn.classList.toggle("on", state[stateKey]);
+        btn.setAttribute("aria-pressed", String(state[stateKey]));
+      }
+      for (const elKey of Object.keys(DEFAULT_CHARS)) {
+        if (params.has(elKey)) el[elKey].value = params.get(elKey);
+      }
+    }
+
+    async function copySettingsUrl() {
+      const url = buildSettingsURL();
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      showToast("URL copied");
+    }
+
+    // Cryptographically secure, unbiased integer in [0, max)
+    function secureRandomInt(max) {
+      const limit = Math.floor(0xffffffff / max) * max;
+      const buf = new Uint32Array(1);
+      let x;
+      do {
+        crypto.getRandomValues(buf);
+        x = buf[0];
+      } while (x >= limit);
+      return x % max;
+    }
+
+    function activeSets() {
+      const keys = ["upper", "lower", "number", "symbol"].filter((k) => state[k]);
+      const similar = state.excludeSimilar ? new Set(el.similarChars.value.split("")) : null;
+      return keys
+        .map((k) => {
+          let chars = el[k + "Chars"].value;
+          if (similar) {
+            chars = [...chars].filter((c) => !similar.has(c)).join("");
+          }
+          return chars;
+        })
+        .filter((s) => s.length > 0);
+    }
+
+    // Single attempt to build a password respecting all constraints
+    function tryGenerate(sets, length) {
+      const pool = sets.join("");
+      let letterPool = "";
+      if (state.startWithLetter) {
+        letterPool = [...pool].filter((c) => /[A-Za-z]/.test(c)).join("");
+        if (letterPool.length === 0) return null;
+      }
+      if (!state.allowDuplicates && new Set(pool).size < length) return null;
+
+      const password = [];
+      const used = new Set();
+      const maxAttempts = length * 100;
+      let attempts = 0;
+
+      while (password.length < length) {
+        if (++attempts > maxAttempts) return null;
+        const pickPool = password.length === 0 && state.startWithLetter ? letterPool : pool;
+        const char = pickPool[secureRandomInt(pickPool.length)];
+        if (!state.allowDuplicates && used.has(char)) continue;
+        if (!state.allowSequential && password.length > 0) {
+          const prev = password[password.length - 1];
+          if (Math.abs(char.charCodeAt(0) - prev.charCodeAt(0)) <= 1) continue;
+        }
+        password.push(char);
+        used.add(char);
+      }
+      return password.join("");
+    }
+
+    function generatePassword() {
+      const sets = activeSets();
+      if (sets.length === 0) return "";
+      const length = Number(el.length.value);
+      // Retry a few times to also get coverage from each selected set
+      for (let i = 0; i < 10; i++) {
+        const result = tryGenerate(sets, length);
+        if (!result) return "";
+        if (sets.length > length) return result;
+        if (sets.every((s) => [...result].some((c) => s.includes(c)))) return result;
+      }
+      return tryGenerate(sets, length) || "";
+    }
+
+    function updateStrength(password, poolSize) {
+      const entropy = password.length * Math.log2(poolSize || 1);
+      let label;
+      if (entropy < 40) label = "weak";
+      else if (entropy < 60) label = "fair";
+      else if (entropy < 80) label = "good";
+      else label = "strong";
+      el.strengthLabel.textContent = label;
+    }
+
+    function render() {
+      const sets = activeSets();
+      if (sets.length === 0) {
+        el.password.value = "Select at least one option";
+        el.strengthLabel.textContent = "—";
+        return;
+      }
+      const password = generatePassword();
+      if (!password) {
+        el.password.value = "Settings too strict";
+        el.strengthLabel.textContent = "—";
+        return;
+      }
+      el.password.value = password;
+      updateStrength(password, sets.join("").length);
+      // Auto-select unless the user is typing in another input
+      if (state.autoSelect) {
+        const active = document.activeElement;
+        const editingElsewhere = active && active !== el.password &&
+          (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+        if (!editingElsewhere) el.password.select();
+      }
+    }
+
+    async function copyPassword() {
+      const value = el.password.value;
+      if (!value || value === "Select at least one option" || value === "Settings too strict") return;
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch {
+        el.password.removeAttribute("readonly");
+        el.password.select();
+        document.execCommand("copy");
+        el.password.setAttribute("readonly", "");
+        window.getSelection().removeAllRanges();
+      }
+      showToast("copied");
+      pushToHistory([value]);
+    }
+
+    // ── History (persisted in localStorage)
+    let history = [];
+    const STORAGE_KEY = "pg336_history";
+
+    function loadHistoryState() {
+      try {
+        const obj = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        state.saveHistory = !!obj.enabled;
+        state.historyCount = Math.max(1, Math.min(100, Number(obj.count) || 10));
+        history = Array.isArray(obj.items) ? obj.items.slice(0, state.historyCount) : [];
+      } catch { history = []; }
+    }
+    function saveHistoryState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          enabled: state.saveHistory,
+          count: state.historyCount,
+          items: history,
+        }));
+      } catch {}
+    }
+    function pushToHistory(passwords) {
+      if (!state.saveHistory) return;
+      for (const p of passwords) {
+        if (p && p !== "Select at least one option" && p !== "Settings too strict") {
+          history.unshift(p);
+        }
+      }
+      history = history.slice(0, state.historyCount);
+      saveHistoryState();
+      renderHistory();
+    }
+    function clearHistory() {
+      history = [];
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+      renderHistory();
+    }
+    function renderHistory() {
+      el.historyList.innerHTML = "";
+      el.historySummaryCount.textContent = String(history.length);
+      for (const pw of history) {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        const text = document.createElement("span");
+        text.className = "history-text";
+        text.textContent = pw;
+        const btn = document.createElement("button");
+        btn.className = "text-btn";
+        btn.type = "button";
+        btn.textContent = "copy";
+        btn.addEventListener("click", async () => {
+          try { await navigator.clipboard.writeText(pw); }
+          catch {}
+          showToast("copied");
+        });
+        li.appendChild(text);
+        li.appendChild(btn);
+        el.historyList.appendChild(li);
+      }
+    }
+
+    // ── Bulk generation
+    function generateBulk() {
+      const count = Math.max(1, Math.min(100, parseInt(el.bulkCount.value, 10) || 1));
+      const results = [];
+      for (let i = 0; i < count; i++) {
+        const p = generatePassword();
+        if (!p) break;
+        results.push(p);
+      }
+      el.bulkResults.value = results.join("\n");
+    }
+    async function copyBulk() {
+      const text = el.bulkResults.value;
+      if (!text) return;
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        el.bulkResults.select();
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+      }
+      showToast("copied");
+      pushToHistory(text.split("\n").filter(Boolean));
+    }
+
+    let toastTimer;
+    function showToast(message) {
+      el.toast.textContent = message;
+      el.toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.toast.classList.remove("show"), 1400);
+    }
+
+    function setToggle(key, btn) {
+      btn.addEventListener("click", () => {
+        const types = ["upper", "lower", "number", "symbol"];
+        if (types.includes(key) && state[key] && types.every((k) => k === key || !state[k])) {
+          showToast("keep at least one");
+          return;
+        }
+        state[key] = !state[key];
+        btn.classList.toggle("on", state[key]);
+        btn.setAttribute("aria-pressed", String(state[key]));
+        render();
+      });
+    }
+
+    // Length slider <-> number input sync
+    const MIN_LEN = 4, MAX_LEN = 64;
+    el.length.addEventListener("input", () => {
+      el.lengthValue.value = el.length.value;
+      render();
+    });
+    el.lengthValue.addEventListener("input", () => {
+      const v = parseInt(el.lengthValue.value, 10);
+      if (!isNaN(v) && v >= MIN_LEN && v <= MAX_LEN) {
+        el.length.value = v;
+        render();
+      }
+    });
+    el.lengthValue.addEventListener("blur", () => {
+      let v = parseInt(el.lengthValue.value, 10);
+      if (isNaN(v) || v < MIN_LEN) v = MIN_LEN;
+      else if (v > MAX_LEN) v = MAX_LEN;
+      el.lengthValue.value = v;
+      el.length.value = v;
+      render();
+    });
+
+    setToggle("upper", el.upper);
+    setToggle("lower", el.lower);
+    setToggle("number", el.number);
+    setToggle("symbol", el.symbol);
+    setToggle("excludeSimilar", el.excludeSimilar);
+    setToggle("startWithLetter", el.startWithLetter);
+    setToggle("allowDuplicates", el.allowDuplicates);
+    setToggle("allowSequential", el.allowSequential);
+    setToggle("autoSelect", el.autoSelect);
+
+    [el.upperChars, el.lowerChars, el.numberChars, el.symbolChars, el.similarChars]
+      .forEach((input) => input.addEventListener("input", render));
+
+    el.refresh.addEventListener("click", () => {
+      render();
+      pushToHistory([el.password.value]);
+    });
+    el.copy.addEventListener("click", copyPassword);
+
+    // History config: toggle + count (persisted to localStorage)
+    el.saveHistory.addEventListener("click", () => {
+      state.saveHistory = !state.saveHistory;
+      el.saveHistory.classList.toggle("on", state.saveHistory);
+      el.saveHistory.setAttribute("aria-pressed", String(state.saveHistory));
+      saveHistoryState();
+    });
+    el.historyCount.addEventListener("input", () => {
+      const v = Math.max(1, Math.min(100, parseInt(el.historyCount.value, 10) || 10));
+      state.historyCount = v;
+      if (history.length > v) { history = history.slice(0, v); renderHistory(); }
+      saveHistoryState();
+    });
+    el.historyClear.addEventListener("click", clearHistory);
+
+    // Bulk
+    el.bulkGenerate.addEventListener("click", generateBulk);
+    el.bulkCopy.addEventListener("click", copyBulk);
+
+    // Settings URL
+    el.copySettingsUrl.addEventListener("click", copySettingsUrl);
+
+    // Apply settings from ?... URL params first, so they win over hardcoded defaults
+    loadSettingsFromURL();
+
+    // Initialize history UI from localStorage
+    loadHistoryState();
+    el.saveHistory.classList.toggle("on", state.saveHistory);
+    el.saveHistory.setAttribute("aria-pressed", String(state.saveHistory));
+    el.historyCount.value = state.historyCount;
+    renderHistory();
+
+    el.lengthValue.value = el.length.value;
+    render();
+  </script>
+</body>
+</html>
