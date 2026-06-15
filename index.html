@@ -16,6 +16,7 @@
       --muted: #8a8a8a;
       --border: #4a4a4a;
       --on-accent: #0d0d0d;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     }
 
     * { box-sizing: border-box; }
@@ -61,7 +62,7 @@
       border: 0;
       background: transparent;
       color: var(--text);
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-family: var(--mono);
       font-size: 16px;
       padding: 14px 16px;
     }
@@ -121,23 +122,28 @@
     .advanced[open] summary::before { content: "− "; }
     .advanced[open] summary { margin-bottom: 6px; }
 
-    /* Small number input (used for bulk count + history count) */
-    .count-input {
+    /* Small inline number inputs (length, bulk count, history count) */
+    .count-input,
+    .length-value {
       flex: none;
       width: 44px;
       background: transparent;
       border: 0;
       border-bottom: 1px solid transparent;
       color: var(--accent);
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-family: var(--mono);
       font-size: 14px;
       text-align: right;
       padding: 2px 0;
+      -moz-appearance: textfield;
     }
-    .count-input:focus { outline: none; border-bottom-color: var(--accent); }
+    .length-value { width: 36px; }
+    .count-input:focus,
+    .length-value:focus { outline: none; border-bottom-color: var(--accent); }
     .count-input::-webkit-outer-spin-button,
-    .count-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .count-input { -moz-appearance: textfield; }
+    .count-input::-webkit-inner-spin-button,
+    .length-value::-webkit-outer-spin-button,
+    .length-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
     /* Text button (cyan link-style action) */
     .text-btn {
@@ -167,7 +173,7 @@
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text);
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-family: var(--mono);
       font-size: 13px;
       padding: 10px 12px;
       margin-top: 6px;
@@ -196,7 +202,7 @@
     .history-text {
       flex: 1;
       min-width: 0;
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-family: var(--mono);
       font-size: 13px;
       color: var(--text);
       overflow-x: auto;
@@ -246,7 +252,7 @@
       border-bottom: 1px solid transparent;
       background: transparent;
       color: var(--muted);
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-family: var(--mono);
       font-size: 13px;
       letter-spacing: 0.5px;
       padding: 4px 0;
@@ -258,7 +264,7 @@
       border-bottom-color: var(--accent);
     }
 
-    /* Length slider + editable number */
+    /* Length slider */
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
@@ -286,22 +292,6 @@
       border-radius: 0;
       cursor: pointer;
     }
-    .length-value {
-      flex: none;
-      color: var(--accent);
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      width: 36px;
-      text-align: right;
-      font-size: 14px;
-      background: transparent;
-      border: 0;
-      border-bottom: 1px solid transparent;
-      padding: 2px 0;
-    }
-    .length-value:focus { outline: none; border-bottom-color: var(--accent); }
-    .length-value::-webkit-outer-spin-button,
-    .length-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .length-value { -moz-appearance: textfield; }
 
     /* Sharp-cornered toggle */
     .toggle {
@@ -333,7 +323,7 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <main class="wrap">
     <h1 class="wordmark">Password Generator 336</h1>
 
     <div class="output">
@@ -358,7 +348,7 @@
       <label for="length" class="setting-label">Length</label>
       <input id="length" type="range" min="4" max="64" value="25">
       <input id="lengthValue" class="length-value" type="number" min="4" max="64" value="25" aria-label="Password length (number)">
-      <span class="strength">
+      <span class="strength" aria-live="polite">
         <span class="strength-label">Strength —</span><span id="strengthLabel" class="strength-value">—</span>
       </span>
     </section>
@@ -466,10 +456,12 @@
         <button id="historyClear" class="text-btn" type="button">Clear (also wipes saved data)</button>
       </div>
     </details>
-  </div>
+  </main>
 
   <script>
     "use strict";
+
+    const MIN_LEN = 4, MAX_LEN = 64;
 
     const state = {
       upper: true, lower: true, number: true, symbol: true, excludeSimilar: false,
@@ -639,22 +631,42 @@
       const sets = activeSets();
       if (sets.length === 0) return "";
       const length = Number(el.length.value);
-      // Retry a few times to also get coverage from each selected set
-      for (let i = 0; i < 10; i++) {
-        const result = tryGenerate(sets, length);
-        if (!result) return "";
-        if (sets.length > length) return result;
+      // Retry a few times so every selected set is represented (when there's room).
+      let result = "";
+      for (let i = 0; i < 12; i++) {
+        result = tryGenerate(sets, length);
+        if (!result) return "";                       // constraints are impossible
+        if (sets.length > length) return result;      // no room to guarantee coverage
         if (sets.every((s) => [...result].some((c) => s.includes(c)))) return result;
       }
-      return tryGenerate(sets, length) || "";
+      return result;                                  // best effort after retries
     }
 
-    function updateStrength(password, poolSize) {
-      const entropy = password.length * Math.log2(poolSize || 1);
+    // Honest entropy in bits, accounting for the main constraints that shrink the
+    // keyspace: start-with-letter (smaller pool for char 0) and no-duplicates
+    // (sampling without replacement). No-sequential's effect is small and not modeled.
+    function entropyBits() {
+      const sets = activeSets();
+      const pool = sets.join("").length;
+      if (pool === 0) return 0;
+      const length = Number(el.length.value);
+      const letterCount = state.startWithLetter
+        ? [...sets.join("")].filter((c) => /[A-Za-z]/.test(c)).length
+        : 0;
+      let bits = 0;
+      for (let i = 0; i < length; i++) {
+        let choices = (i === 0 && letterCount > 0) ? letterCount : pool;
+        if (!state.allowDuplicates) choices = Math.max(1, choices - i);
+        bits += Math.log2(choices);
+      }
+      return bits;
+    }
+
+    function updateStrength(bits) {
       let label;
-      if (entropy < 40) label = "weak";
-      else if (entropy < 60) label = "fair";
-      else if (entropy < 80) label = "good";
+      if (bits < 40) label = "weak";
+      else if (bits < 60) label = "fair";
+      else if (bits < 80) label = "good";
       else label = "strong";
       el.strengthLabel.textContent = label;
     }
@@ -673,7 +685,7 @@
         return;
       }
       el.password.value = password;
-      updateStrength(password, sets.join("").length);
+      updateStrength(entropyBits());
       // Auto-select unless the user is typing in another input
       if (state.autoSelect) {
         const active = document.activeElement;
@@ -806,8 +818,12 @@
       });
     }
 
+    // Clamp a number input to [1, 100] on blur
+    function clampCount(input, fallback) {
+      return Math.max(1, Math.min(100, parseInt(input.value, 10) || fallback));
+    }
+
     // Length slider <-> number input sync
-    const MIN_LEN = 4, MAX_LEN = 64;
     el.length.addEventListener("input", () => {
       el.lengthValue.value = el.length.value;
       render();
@@ -855,16 +871,22 @@
       saveHistoryState();
     });
     el.historyCount.addEventListener("input", () => {
-      const v = Math.max(1, Math.min(100, parseInt(el.historyCount.value, 10) || 10));
+      const v = clampCount(el.historyCount, 10);
       state.historyCount = v;
       if (history.length > v) { history = history.slice(0, v); renderHistory(); }
       saveHistoryState();
+    });
+    el.historyCount.addEventListener("blur", () => {
+      el.historyCount.value = clampCount(el.historyCount, 10);
     });
     el.historyClear.addEventListener("click", clearHistory);
 
     // Bulk
     el.bulkGenerate.addEventListener("click", generateBulk);
     el.bulkCopy.addEventListener("click", copyBulk);
+    el.bulkCount.addEventListener("blur", () => {
+      el.bulkCount.value = clampCount(el.bulkCount, 1);
+    });
 
     // Settings URL
     el.copySettingsUrl.addEventListener("click", copySettingsUrl);
