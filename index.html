@@ -42,6 +42,9 @@
     body {
       margin: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 40px 28px 60px;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-size: 14px;
@@ -52,8 +55,9 @@
     }
 
     .wrap {
+      width: 100%;
       max-width: 720px;
-      margin: 0 auto;
+      flex: 1 0 auto;
     }
 
     /* Wordmark */
@@ -336,6 +340,9 @@
 
     /* Footer */
     .site-footer {
+      width: 100%;
+      max-width: 720px;
+      flex-shrink: 0;
       margin-top: 44px;
       padding-top: 18px;
       border-top: 1px solid var(--border);
@@ -486,13 +493,13 @@
         <button id="historyClear" class="text-btn" type="button">Clear history</button>
       </div>
     </details>
-
-    <footer class="site-footer">
-      <a href="privacy.html">Privacy</a>
-      <span class="sep">·</span>
-      <a href="https://github.com/afraazali42/passwordgenerator336" target="_blank" rel="noopener">GitHub</a>
-    </footer>
   </main>
+
+  <footer class="site-footer">
+    <a href="privacy.html">Privacy</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/afraazali42/passwordgenerator336" target="_blank" rel="noopener">GitHub</a>
+  </footer>
 
   <script>
     "use strict";

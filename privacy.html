@@ -39,6 +39,9 @@
     body {
       margin: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 40px 28px 60px;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-size: 15px;
@@ -48,7 +51,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .wrap { max-width: 680px; margin: 0 auto; }
+    .wrap { width: 100%; max-width: 680px; flex: 1 0 auto; }
 
     .home {
       display: inline-block;
@@ -97,9 +100,11 @@
     }
 
     .site-footer {
+      width: 100%;
       max-width: 680px;
-      margin: 48px auto 0;
-      padding: 18px 28px 0;
+      flex-shrink: 0;
+      margin-top: 48px;
+      padding-top: 18px;
       border-top: 1px solid var(--border);
       font-size: 13px;
       color: var(--muted);
