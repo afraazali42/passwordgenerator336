@@ -7,10 +7,10 @@ dependencies, no backend.
 
 - Generates strong passwords entirely in the browser using the
   [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues).
-- Customizable: length (4–64), character sets (with editable contents per set),
+- Customizable: length (4-64), character sets (with editable contents per set),
   exclude characters, start-with-letter, no-duplicates, no-sequential, auto-select.
 - Bulk generation up to 100 at a time.
-- Optional history (stored locally in your browser only — never sent anywhere).
+- Optional history (stored locally in your browser only, never sent anywhere).
 - Shareable settings URL: bookmark your preferred configuration.
 
 ## Run locally

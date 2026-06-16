@@ -1,4 +1,4 @@
-# Security headers for Cloudflare Pages — applied to every route.
+# Security headers for Cloudflare Pages, applied to every route.
 # The standout is `connect-src 'none'`: the browser will BLOCK any network
 # request (fetch/XHR/WebSocket/beacon), so a generated password physically
 # cannot leave the page. Our "never sent anywhere" promise, enforced.

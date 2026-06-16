@@ -1,11 +1,11 @@
 # macOS
 .DS_Store
 
-# Old code from before the rebuild — kept on disk for now, never committed
+# Old code from before the rebuild, kept on disk for now, never committed
 public_html/
 original-preview/
 
-# Secrets — never commit
+# Secrets, never commit
 .env
 .env.*
 !.env.example

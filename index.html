@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Password Generator 336 — Free, Strong &amp; Private Passwords</title>
-  <meta name="description" content="Generate strong, random passwords free, right in your browser. Choose the length and characters — nothing is ever sent or stored, and there's no sign-up.">
+  <title>Password Generator 336 - Free, Strong &amp; Private Passwords</title>
+  <meta name="description" content="Generate strong, random passwords free, right in your browser. Choose the length and characters. Nothing is ever sent or stored, and there's no sign-up.">
   <meta name="theme-color" content="#1a1a1a">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231a1a1a'/%3E%3Cg fill='%231ee5e5'%3E%3Ccircle cx='31' cy='31' r='8.5'/%3E%3Ccircle cx='69' cy='31' r='8.5'/%3E%3Ccircle cx='50' cy='50' r='8.5'/%3E%3Ccircle cx='31' cy='69' r='8.5'/%3E%3Ccircle cx='69' cy='69' r='8.5'/%3E%3C/g%3E%3C/svg%3E">
 
@@ -13,14 +13,14 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Password Generator 336">
   <meta property="og:url" content="https://passwordgenerator336.com/">
-  <meta property="og:title" content="Password Generator 336 — Free, Strong &amp; Private Passwords">
+  <meta property="og:title" content="Password Generator 336 - Free, Strong &amp; Private Passwords">
   <meta property="og:description" content="Generate strong, random passwords free, right in your browser. Nothing is ever sent or stored.">
   <meta property="og:image" content="https://passwordgenerator336.com/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Password Generator 336 — Free, Strong &amp; Private Passwords">
+  <meta name="twitter:title" content="Password Generator 336 - Free, Strong &amp; Private Passwords">
   <meta name="twitter:description" content="Generate strong, random passwords free, right in your browser. Nothing is ever sent or stored.">
   <meta name="twitter:image" content="https://passwordgenerator336.com/og.png">
 
@@ -39,7 +39,7 @@
   </script>
 
   <style>
-    /* Space Mono — self-hosted (SIL OFL, see fonts/OFL.txt). No third-party request. */
+    /* Space Mono, self-hosted (SIL OFL, see fonts/OFL.txt). No third-party request. */
     @font-face {
       font-family: "Space Mono";
       font-style: normal;
@@ -265,7 +265,7 @@
       padding: 8px 0 0;
     }
 
-    /* Settings — one row each */
+    /* Settings, one row each */
     .settings {
       list-style: none;
       margin: 0;
@@ -416,7 +416,7 @@
       <input id="length" type="range" min="4" max="64" value="25">
       <input id="lengthValue" class="length-value" type="number" min="4" max="64" value="25" aria-label="Password length (number)">
       <span class="strength" aria-live="polite">
-        <span class="strength-label">Entropy:</span><span id="strengthLabel" class="strength-value">—</span>
+        <span class="strength-label">Entropy:</span><span id="strengthLabel" class="strength-value">-</span>
       </span>
     </section>
 
@@ -579,7 +579,7 @@
       copySettingsUrl: document.getElementById("copySettingsUrl"),
     };
 
-    // Default character sets — anything not matching the default goes into the shareable URL
+    // Default character sets, anything not matching the default goes into the shareable URL
     const DEFAULT_CHARS = {
       upperChars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
       lowerChars: "abcdefghijklmnopqrstuvwxyz",
@@ -742,13 +742,13 @@
       const sets = activeSets();
       if (sets.length === 0) {
         el.password.value = "Select at least one option";
-        el.strengthLabel.textContent = "—";
+        el.strengthLabel.textContent = "-";
         return;
       }
       const password = generatePassword();
       if (!password) {
         el.password.value = "Settings too strict";
-        el.strengthLabel.textContent = "—";
+        el.strengthLabel.textContent = "-";
         return;
       }
       el.password.value = password;
