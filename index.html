@@ -460,7 +460,7 @@
     </details>
 
     <details class="advanced">
-      <summary>History (<span id="historySummaryCount">0</span>)</summary>
+      <summary>History<span id="historySummaryCount"></span></summary>
       <ul class="settings">
         <li class="setting">
           <span class="setting-label">Save history (last <input id="historyCount" type="number" min="1" max="100" value="10" class="count-input" aria-label="History size">)</span>
@@ -768,7 +768,7 @@
     }
     function renderHistory() {
       el.historyList.innerHTML = "";
-      el.historySummaryCount.textContent = String(history.length);
+      el.historySummaryCount.textContent = history.length ? " (" + history.length + ")" : "";
       for (const pw of history) {
         const li = document.createElement("li");
         li.className = "history-item";
