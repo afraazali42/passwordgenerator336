@@ -1,27 +1,2 @@
-# macOS
 .DS_Store
-
-# Old code from before the rebuild, kept on disk for now, never committed
-public_html/
-original-preview/
-
-# Secrets, never commit
-.env
-.env.*
-!.env.example
-
-# Editor / IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Per-machine Claude Code config
 .claude/
-
-# Dependencies (if ever added)
-node_modules/
-
-# Build output (if ever added)
-dist/
-build/
