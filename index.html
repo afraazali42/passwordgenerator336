@@ -384,6 +384,23 @@
       cursor: pointer;
     }
     .theme-toggle:hover { text-decoration: underline; }
+    .footer-right { display: flex; align-items: center; gap: 14px; }
+    .lang-select {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font: inherit;
+      font-size: 13px;
+      color: var(--accent);
+      cursor: pointer;
+    }
+    .lang-select option { color: #1c1b18; }
+
+    /* Right-to-left languages (Arabic): mirror the toggle knob, keep Latin fields LTR */
+    [dir="rtl"] .toggle.on::after { transform: translateX(-18px); }
+    [dir="rtl"] .password,
+    [dir="rtl"] .bulk-textarea,
+    [dir="rtl"] .charset { direction: ltr; }
 
     @media (max-width: 600px) {
       body { padding: 32px 20px 50px; }
@@ -414,38 +431,38 @@
     </div>
 
     <section class="length-section">
-      <label for="length" class="setting-label">Length</label>
+      <label for="length" class="setting-label" data-i18n="length">Length</label>
       <input id="length" type="range" min="4" max="64" value="25">
       <input id="lengthValue" class="length-value" type="number" min="4" max="64" value="25" aria-label="Password length (number)">
       <span class="strength" aria-live="polite">
-        <span class="strength-label">Entropy:</span><span id="strengthLabel" class="strength-value">-</span>
+        <span class="strength-label" data-i18n="entropy">Entropy:</span><span id="strengthLabel" class="strength-value">-</span>
       </span>
     </section>
 
     <ul class="settings">
       <li class="setting">
-        <span class="setting-label">Uppercase</span>
+        <span class="setting-label" data-i18n="uppercase">Uppercase</span>
         <div class="setting-row">
           <input id="upperChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Uppercase characters" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
           <button id="upper" class="toggle on" type="button" aria-pressed="true" aria-label="Include uppercase"></button>
         </div>
       </li>
       <li class="setting">
-        <span class="setting-label">Lowercase</span>
+        <span class="setting-label" data-i18n="lowercase">Lowercase</span>
         <div class="setting-row">
           <input id="lowerChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Lowercase characters" value="abcdefghijklmnopqrstuvwxyz">
           <button id="lower" class="toggle on" type="button" aria-pressed="true" aria-label="Include lowercase"></button>
         </div>
       </li>
       <li class="setting">
-        <span class="setting-label">Numbers</span>
+        <span class="setting-label" data-i18n="numbers">Numbers</span>
         <div class="setting-row">
           <input id="numberChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Number characters" value="0123456789">
           <button id="number" class="toggle on" type="button" aria-pressed="true" aria-label="Include numbers"></button>
         </div>
       </li>
       <li class="setting">
-        <span class="setting-label">Symbols</span>
+        <span class="setting-label" data-i18n="symbols">Symbols</span>
         <div class="setting-row">
           <input id="symbolChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Symbol characters" value="!#$%&amp;()*+-./:=?@[]^_{|}~">
           <button id="symbol" class="toggle on" type="button" aria-pressed="true" aria-label="Include symbols"></button>
@@ -454,67 +471,67 @@
     </ul>
 
     <details class="advanced">
-      <summary>More settings</summary>
+      <summary data-i18n="moreSettings">More settings</summary>
       <ul class="settings">
         <li class="setting">
-          <span class="setting-label">Exclude</span>
+          <span class="setting-label" data-i18n="exclude">Exclude</span>
           <div class="setting-row">
             <input id="similarChars" class="charset" type="text" spellcheck="false" autocomplete="off" aria-label="Characters to exclude" value="il1LoO0|`'-_&quot;:;.,()[]{}/\&lt;&gt;">
             <button id="excludeSimilar" class="toggle" type="button" aria-pressed="false" aria-label="Exclude characters"></button>
           </div>
         </li>
         <li class="setting">
-          <span class="setting-label">Start with letter</span>
+          <span class="setting-label" data-i18n="startLetter">Start with letter</span>
           <div class="setting-row">
             <button id="startWithLetter" class="toggle on" type="button" aria-pressed="true" aria-label="Start password with a letter"></button>
           </div>
         </li>
         <li class="setting">
-          <span class="setting-label">Allow duplicates</span>
+          <span class="setting-label" data-i18n="allowDup">Allow duplicates</span>
           <div class="setting-row">
             <button id="allowDuplicates" class="toggle on" type="button" aria-pressed="true" aria-label="Allow duplicate characters"></button>
           </div>
         </li>
         <li class="setting">
-          <span class="setting-label">Allow sequential</span>
+          <span class="setting-label" data-i18n="allowSeq">Allow sequential</span>
           <div class="setting-row">
             <button id="allowSequential" class="toggle on" type="button" aria-pressed="true" aria-label="Allow sequential characters"></button>
           </div>
         </li>
         <li class="setting">
-          <span class="setting-label">Auto-select</span>
+          <span class="setting-label" data-i18n="autoSelect">Auto-select</span>
           <div class="setting-row">
             <button id="autoSelect" class="toggle" type="button" aria-pressed="false" aria-label="Auto-select password after generation"></button>
           </div>
         </li>
         <li class="setting">
-          <span class="setting-label">Settings URL <em style="color:var(--muted);font-style:normal;font-size:12px;">(bookmark to reload these settings)</em></span>
+          <span class="setting-label"><span data-i18n="settingsUrl">Settings URL</span> <em style="color:var(--muted);font-style:normal;font-size:12px;" data-i18n="settingsUrlHint">(bookmark to reload these settings)</em></span>
           <div class="setting-row">
-            <button id="copySettingsUrl" class="text-btn" type="button">Copy</button>
+            <button id="copySettingsUrl" class="text-btn" type="button" data-i18n="copy">Copy</button>
           </div>
         </li>
       </ul>
     </details>
 
     <details class="advanced">
-      <summary>Generate in bulk</summary>
+      <summary data-i18n="bulkTitle">Generate in bulk</summary>
       <div class="bulk-controls">
-        <span class="count-label">Generate</span>
+        <span class="count-label" data-i18n="genVerb">Generate</span>
         <input id="bulkCount" type="number" min="1" max="100" value="10" class="count-input" aria-label="Bulk count">
-        <span class="count-label">passwords</span>
-        <button id="bulkGenerate" class="text-btn" type="button">Go →</button>
+        <span class="count-label" data-i18n="passwordsWord">passwords</span>
+        <button id="bulkGenerate" class="text-btn" type="button"><span data-i18n="go">Go</span> →</button>
       </div>
-      <textarea id="bulkResults" class="bulk-textarea" readonly placeholder="Click Go to generate"></textarea>
+      <textarea id="bulkResults" class="bulk-textarea" readonly placeholder="Click Go to generate" data-i18n-ph="bulkPlaceholder"></textarea>
       <div class="bulk-actions">
-        <button id="bulkCopy" class="text-btn" type="button">Copy all</button>
+        <button id="bulkCopy" class="text-btn" type="button" data-i18n="copyAll">Copy all</button>
       </div>
     </details>
 
     <details class="advanced">
-      <summary>History</summary>
+      <summary data-i18n="historyTitle">History</summary>
       <ul class="settings">
         <li class="setting">
-          <span class="setting-label">Save history (last <input id="historyCount" type="number" min="1" max="100" value="10" class="count-input" aria-label="History size">)</span>
+          <span class="setting-label"><span data-i18n="saveHistory">Save history</span> (<input id="historyCount" type="number" min="1" max="100" value="10" class="count-input" aria-label="History size">)</span>
           <div class="setting-row">
             <button id="saveHistory" class="toggle" type="button" aria-pressed="false" aria-label="Save password history"></button>
           </div>
@@ -522,24 +539,165 @@
       </ul>
       <ul id="historyList" class="history-list"></ul>
       <div class="history-clear-row">
-        <button id="historyClear" class="text-btn" type="button">Clear history</button>
+        <button id="historyClear" class="text-btn" type="button" data-i18n="clearHistory">Clear history</button>
       </div>
     </details>
   </main>
 
   <footer class="site-footer">
     <span class="footer-left">
-      <a href="privacy.html">Privacy</a>
+      <a href="privacy.html" data-i18n="privacy">Privacy</a>
       <span class="sep">·</span>
       <a href="https://github.com/afraazali42/passwordgenerator336" target="_blank" rel="noopener">GitHub</a>
     </span>
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode">Light</button>
+    <span class="footer-right">
+      <select id="langSelect" class="lang-select" aria-label="Language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="pt">Português</option>
+        <option value="ru">Русский</option>
+        <option value="ar">العربية</option>
+        <option value="hi">हिन्दी</option>
+        <option value="zh">中文</option>
+        <option value="ja">日本語</option>
+      </select>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode">Light</button>
+    </span>
   </footer>
 
   <script>
     "use strict";
 
     const MIN_LEN = 4, MAX_LEN = 64;
+
+    // UI translations (v1, machine-assisted; native review welcome). The brand name,
+    // "GitHub", and the generated passwords are never translated. Language is
+    // auto-detected from the browser, overridable via the footer picker, and (when
+    // the user picks one) captured in the settings URL.
+    const I18N = {
+      en: {
+        length: "Length", entropy: "Entropy:", bits: "bits", uppercase: "Uppercase",
+        lowercase: "Lowercase", numbers: "Numbers", symbols: "Symbols", moreSettings: "More settings",
+        exclude: "Exclude", startLetter: "Start with letter", allowDup: "Allow duplicates",
+        allowSeq: "Allow sequential", autoSelect: "Auto-select", settingsUrl: "Settings URL",
+        settingsUrlHint: "(bookmark to reload these settings)", copy: "Copy", bulkTitle: "Generate in bulk",
+        genVerb: "Generate", passwordsWord: "passwords", go: "Go", copyAll: "Copy all",
+        bulkPlaceholder: "Click Go to generate", historyTitle: "History", saveHistory: "Save history",
+        clearHistory: "Clear history", itemCopy: "copy", privacy: "Privacy", light: "Light", dark: "Dark",
+        msgSelectOne: "Select at least one option", msgTooStrict: "Settings too strict",
+        toastCopied: "copied", toastUrlCopied: "URL copied", toastKeepOne: "keep at least one",
+      },
+      es: {
+        length: "Longitud", entropy: "Entropía:", bits: "bits", uppercase: "Mayúsculas",
+        lowercase: "Minúsculas", numbers: "Números", symbols: "Símbolos", moreSettings: "Más opciones",
+        exclude: "Excluir", startLetter: "Empezar con letra", allowDup: "Permitir duplicados",
+        allowSeq: "Permitir secuenciales", autoSelect: "Seleccionar automáticamente", settingsUrl: "URL de ajustes",
+        settingsUrlHint: "(guárdala para recuperar estos ajustes)", copy: "Copiar", bulkTitle: "Generar en lote",
+        genVerb: "Generar", passwordsWord: "contraseñas", go: "Ir", copyAll: "Copiar todo",
+        bulkPlaceholder: "Pulsa Ir para generar", historyTitle: "Historial", saveHistory: "Guardar historial",
+        clearHistory: "Borrar historial", itemCopy: "copiar", privacy: "Privacidad", light: "Claro", dark: "Oscuro",
+        msgSelectOne: "Selecciona al menos una opción", msgTooStrict: "Ajustes demasiado estrictos",
+        toastCopied: "copiado", toastUrlCopied: "URL copiada", toastKeepOne: "deja al menos uno",
+      },
+      fr: {
+        length: "Longueur", entropy: "Entropie :", bits: "bits", uppercase: "Majuscules",
+        lowercase: "Minuscules", numbers: "Chiffres", symbols: "Symboles", moreSettings: "Plus d'options",
+        exclude: "Exclure", startLetter: "Commencer par une lettre", allowDup: "Autoriser les doublons",
+        allowSeq: "Autoriser les suites", autoSelect: "Sélection automatique", settingsUrl: "URL des réglages",
+        settingsUrlHint: "(à mettre en favori pour recharger ces réglages)", copy: "Copier", bulkTitle: "Générer en lot",
+        genVerb: "Générer", passwordsWord: "mots de passe", go: "OK", copyAll: "Tout copier",
+        bulkPlaceholder: "Cliquez sur OK pour générer", historyTitle: "Historique", saveHistory: "Enregistrer l'historique",
+        clearHistory: "Effacer l'historique", itemCopy: "copier", privacy: "Confidentialité", light: "Clair", dark: "Sombre",
+        msgSelectOne: "Sélectionnez au moins une option", msgTooStrict: "Réglages trop stricts",
+        toastCopied: "copié", toastUrlCopied: "URL copiée", toastKeepOne: "gardez-en au moins un",
+      },
+      de: {
+        length: "Länge", entropy: "Entropie:", bits: "Bit", uppercase: "Großbuchstaben",
+        lowercase: "Kleinbuchstaben", numbers: "Zahlen", symbols: "Symbole", moreSettings: "Weitere Optionen",
+        exclude: "Ausschließen", startLetter: "Mit Buchstaben beginnen", allowDup: "Duplikate erlauben",
+        allowSeq: "Folgen erlauben", autoSelect: "Automatisch auswählen", settingsUrl: "Einstellungs-URL",
+        settingsUrlHint: "(als Lesezeichen speichern, um diese Einstellungen zu laden)", copy: "Kopieren", bulkTitle: "Mehrere erzeugen",
+        genVerb: "Erzeuge", passwordsWord: "Passwörter", go: "Los", copyAll: "Alle kopieren",
+        bulkPlaceholder: "Auf Los klicken zum Erzeugen", historyTitle: "Verlauf", saveHistory: "Verlauf speichern",
+        clearHistory: "Verlauf löschen", itemCopy: "kopieren", privacy: "Datenschutz", light: "Hell", dark: "Dunkel",
+        msgSelectOne: "Mindestens eine Option auswählen", msgTooStrict: "Einstellungen zu streng",
+        toastCopied: "kopiert", toastUrlCopied: "URL kopiert", toastKeepOne: "mindestens eine behalten",
+      },
+      pt: {
+        length: "Comprimento", entropy: "Entropia:", bits: "bits", uppercase: "Maiúsculas",
+        lowercase: "Minúsculas", numbers: "Números", symbols: "Símbolos", moreSettings: "Mais opções",
+        exclude: "Excluir", startLetter: "Começar com letra", allowDup: "Permitir duplicados",
+        allowSeq: "Permitir sequenciais", autoSelect: "Selecionar automaticamente", settingsUrl: "URL de configurações",
+        settingsUrlHint: "(salve nos favoritos para recarregar estas configurações)", copy: "Copiar", bulkTitle: "Gerar em lote",
+        genVerb: "Gerar", passwordsWord: "senhas", go: "Ir", copyAll: "Copiar tudo",
+        bulkPlaceholder: "Clique em Ir para gerar", historyTitle: "Histórico", saveHistory: "Salvar histórico",
+        clearHistory: "Limpar histórico", itemCopy: "copiar", privacy: "Privacidade", light: "Claro", dark: "Escuro",
+        msgSelectOne: "Selecione pelo menos uma opção", msgTooStrict: "Configurações muito restritas",
+        toastCopied: "copiado", toastUrlCopied: "URL copiada", toastKeepOne: "mantenha pelo menos um",
+      },
+      ru: {
+        length: "Длина", entropy: "Энтропия:", bits: "бит", uppercase: "Заглавные",
+        lowercase: "Строчные", numbers: "Цифры", symbols: "Символы", moreSettings: "Ещё настройки",
+        exclude: "Исключить", startLetter: "Начинать с буквы", allowDup: "Разрешить повторы",
+        allowSeq: "Разрешить последовательности", autoSelect: "Автовыделение", settingsUrl: "URL настроек",
+        settingsUrlHint: "(сохраните в закладки, чтобы вернуть эти настройки)", copy: "Копировать", bulkTitle: "Создать пакетно",
+        genVerb: "Создать", passwordsWord: "паролей", go: "Старт", copyAll: "Копировать всё",
+        bulkPlaceholder: "Нажмите «Старт» для создания", historyTitle: "История", saveHistory: "Сохранять историю",
+        clearHistory: "Очистить историю", itemCopy: "копировать", privacy: "Конфиденциальность", light: "Светлая", dark: "Тёмная",
+        msgSelectOne: "Выберите хотя бы один вариант", msgTooStrict: "Слишком строгие настройки",
+        toastCopied: "скопировано", toastUrlCopied: "URL скопирован", toastKeepOne: "оставьте хотя бы один",
+      },
+      ar: {
+        length: "الطول", entropy: "الإنتروبيا:", bits: "بت", uppercase: "أحرف كبيرة",
+        lowercase: "أحرف صغيرة", numbers: "أرقام", symbols: "رموز", moreSettings: "خيارات إضافية",
+        exclude: "استبعاد", startLetter: "ابدأ بحرف", allowDup: "السماح بالتكرار",
+        allowSeq: "السماح بالتسلسل", autoSelect: "تحديد تلقائي", settingsUrl: "رابط الإعدادات",
+        settingsUrlHint: "(احفظه في المفضلة لاستعادة هذه الإعدادات)", copy: "نسخ", bulkTitle: "إنشاء بالجملة",
+        genVerb: "إنشاء", passwordsWord: "كلمات مرور", go: "ابدأ", copyAll: "نسخ الكل",
+        bulkPlaceholder: "اضغط ابدأ للإنشاء", historyTitle: "السجل", saveHistory: "حفظ السجل",
+        clearHistory: "مسح السجل", itemCopy: "نسخ", privacy: "الخصوصية", light: "فاتح", dark: "داكن",
+        msgSelectOne: "اختر خيارًا واحدًا على الأقل", msgTooStrict: "الإعدادات صارمة جدًا",
+        toastCopied: "تم النسخ", toastUrlCopied: "تم نسخ الرابط", toastKeepOne: "أبقِ خيارًا واحدًا على الأقل",
+      },
+      hi: {
+        length: "लंबाई", entropy: "एन्ट्रॉपी:", bits: "बिट", uppercase: "बड़े अक्षर",
+        lowercase: "छोटे अक्षर", numbers: "अंक", symbols: "चिह्न", moreSettings: "और विकल्प",
+        exclude: "हटाएँ", startLetter: "अक्षर से शुरू करें", allowDup: "दोहराव की अनुमति दें",
+        allowSeq: "क्रम की अनुमति दें", autoSelect: "स्वतः चयन", settingsUrl: "सेटिंग्स URL",
+        settingsUrlHint: "(इन सेटिंग्स को फिर से लोड करने के लिए बुकमार्क करें)", copy: "कॉपी करें", bulkTitle: "एक साथ बनाएँ",
+        genVerb: "बनाएँ", passwordsWord: "पासवर्ड", go: "जाएँ", copyAll: "सभी कॉपी करें",
+        bulkPlaceholder: "बनाने के लिए जाएँ दबाएँ", historyTitle: "इतिहास", saveHistory: "इतिहास सहेजें",
+        clearHistory: "इतिहास मिटाएँ", itemCopy: "कॉपी", privacy: "गोपनीयता", light: "हल्का", dark: "गहरा",
+        msgSelectOne: "कम से कम एक विकल्प चुनें", msgTooStrict: "सेटिंग्स बहुत सख्त हैं",
+        toastCopied: "कॉपी हो गया", toastUrlCopied: "URL कॉपी हो गया", toastKeepOne: "कम से कम एक रखें",
+      },
+      zh: {
+        length: "长度", entropy: "熵：", bits: "位", uppercase: "大写字母",
+        lowercase: "小写字母", numbers: "数字", symbols: "符号", moreSettings: "更多设置",
+        exclude: "排除", startLetter: "以字母开头", allowDup: "允许重复",
+        allowSeq: "允许连续", autoSelect: "自动选中", settingsUrl: "设置链接",
+        settingsUrlHint: "(收藏以重新加载这些设置)", copy: "复制", bulkTitle: "批量生成",
+        genVerb: "生成", passwordsWord: "个密码", go: "开始", copyAll: "全部复制",
+        bulkPlaceholder: "点击开始生成", historyTitle: "历史记录", saveHistory: "保存历史",
+        clearHistory: "清除历史", itemCopy: "复制", privacy: "隐私", light: "浅色", dark: "深色",
+        msgSelectOne: "请至少选择一项", msgTooStrict: "设置过于严格",
+        toastCopied: "已复制", toastUrlCopied: "链接已复制", toastKeepOne: "至少保留一项",
+      },
+      ja: {
+        length: "長さ", entropy: "エントロピー:", bits: "ビット", uppercase: "大文字",
+        lowercase: "小文字", numbers: "数字", symbols: "記号", moreSettings: "詳細設定",
+        exclude: "除外", startLetter: "文字で始める", allowDup: "重複を許可",
+        allowSeq: "連続を許可", autoSelect: "自動選択", settingsUrl: "設定URL",
+        settingsUrlHint: "(ブックマークするとこの設定を再現できます)", copy: "コピー", bulkTitle: "まとめて生成",
+        genVerb: "生成", passwordsWord: "個のパスワード", go: "実行", copyAll: "すべてコピー",
+        bulkPlaceholder: "実行を押して生成", historyTitle: "履歴", saveHistory: "履歴を保存",
+        clearHistory: "履歴を消去", itemCopy: "コピー", privacy: "プライバシー", light: "ライト", dark: "ダーク",
+        msgSelectOne: "少なくとも1つ選択してください", msgTooStrict: "設定が厳しすぎます",
+        toastCopied: "コピーしました", toastUrlCopied: "URLをコピーしました", toastKeepOne: "最低1つは残してください",
+      },
+    };
 
     const state = {
       upper: true, lower: true, number: true, symbol: true, excludeSimilar: false,
@@ -550,6 +708,9 @@
       saveHistory: false,
       historyCount: 10,
       theme: "dark",
+      lang: "en",
+      langPinned: false,
+      displayState: "password",
     };
 
     const el = {
@@ -584,6 +745,7 @@
       historyClear: document.getElementById("historyClear"),
       copySettingsUrl: document.getElementById("copySettingsUrl"),
       themeToggle: document.getElementById("themeToggle"),
+      langSelect: document.getElementById("langSelect"),
     };
 
     // Default character sets, anything not matching the default goes into the shareable URL
@@ -611,6 +773,7 @@
         if (el[elKey].value !== def) params.set(elKey, el[elKey].value);
       }
       if (state.theme !== "dark") params.set("theme", state.theme);
+      if (state.langPinned) params.set("lang", state.lang);
       return location.origin + location.pathname + "?" + params.toString();
     }
 
@@ -637,6 +800,10 @@
       if (params.has("theme")) {
         state.theme = params.get("theme") === "light" ? "light" : "dark";
       }
+      if (params.has("lang") && I18N[params.get("lang")]) {
+        state.lang = params.get("lang");
+        state.langPinned = true;
+      }
     }
 
     async function copySettingsUrl() {
@@ -651,7 +818,7 @@
         document.execCommand("copy");
         document.body.removeChild(ta);
       }
-      showToast("URL copied");
+      showToast(t("toastUrlCopied"));
     }
 
     function setTheme(theme) {
@@ -659,11 +826,47 @@
       const root = document.documentElement;
       if (state.theme === "light") root.setAttribute("data-theme", "light");
       else root.removeAttribute("data-theme");
-      el.themeToggle.textContent = state.theme === "dark" ? "Light" : "Dark";
+      el.themeToggle.textContent = state.theme === "dark" ? t("light") : t("dark");
       el.themeToggle.setAttribute("aria-label",
         "Switch to " + (state.theme === "dark" ? "light" : "dark") + " mode");
       const tc = document.querySelector('meta[name="theme-color"]');
       if (tc) tc.setAttribute("content", state.theme === "light" ? "#f5f4f0" : "#1a1a1a");
+    }
+
+    // i18n: look up a string in the current language, falling back to English
+    function t(key) {
+      return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+    }
+    // Pick the first browser language we have a translation for, else English
+    function detectLang() {
+      const cands = navigator.languages ? navigator.languages.slice() : [];
+      if (navigator.language) cands.push(navigator.language);
+      for (const c of cands) {
+        const code = String(c).toLowerCase().split("-")[0];
+        if (I18N[code]) return code;
+      }
+      return "en";
+    }
+    function applyTranslations() {
+      document.querySelectorAll("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
+      document.querySelectorAll("[data-i18n-ph]").forEach((n) => { n.placeholder = t(n.dataset.i18nPh); });
+    }
+    // Re-translate the live readouts (entropy unit, status messages) WITHOUT generating a new password
+    function refreshDynamicText() {
+      if (state.displayState === "selectOne") { el.password.value = t("msgSelectOne"); el.strengthLabel.textContent = "-"; }
+      else if (state.displayState === "tooStrict") { el.password.value = t("msgTooStrict"); el.strengthLabel.textContent = "-"; }
+      else { updateStrength(entropyBits()); }
+    }
+    function setLang(lang, pinned) {
+      state.lang = I18N[lang] ? lang : "en";
+      if (pinned) state.langPinned = true;
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
+      if (el.langSelect) el.langSelect.value = state.lang;
+      el.themeToggle.textContent = state.theme === "dark" ? t("light") : t("dark");
+      applyTranslations();
+      refreshDynamicText();
+      renderHistory();
     }
 
     // Cryptographically secure, unbiased integer in [0, max)
@@ -758,22 +961,25 @@
     }
 
     function updateStrength(bits) {
-      el.strengthLabel.textContent = bits.toFixed(2) + " bits";
+      el.strengthLabel.textContent = bits.toFixed(2) + " " + t("bits");
     }
 
     function render() {
       const sets = activeSets();
       if (sets.length === 0) {
-        el.password.value = "Select at least one option";
+        state.displayState = "selectOne";
+        el.password.value = t("msgSelectOne");
         el.strengthLabel.textContent = "-";
         return;
       }
       const password = generatePassword();
       if (!password) {
-        el.password.value = "Settings too strict";
+        state.displayState = "tooStrict";
+        el.password.value = t("msgTooStrict");
         el.strengthLabel.textContent = "-";
         return;
       }
+      state.displayState = "password";
       el.password.value = password;
       updateStrength(entropyBits());
       // Auto-select unless the user is typing in another input
@@ -787,7 +993,7 @@
 
     async function copyPassword() {
       const value = el.password.value;
-      if (!value || value === "Select at least one option" || value === "Settings too strict") return;
+      if (state.displayState !== "password" || !value) return;
       try {
         await navigator.clipboard.writeText(value);
       } catch {
@@ -797,7 +1003,7 @@
         el.password.setAttribute("readonly", "");
         window.getSelection().removeAllRanges();
       }
-      showToast("copied");
+      showToast(t("toastCopied"));
       pushToHistory([value]);
     }
 
@@ -825,9 +1031,7 @@
     function pushToHistory(passwords) {
       if (!state.saveHistory) return;
       for (const p of passwords) {
-        if (p && p !== "Select at least one option" && p !== "Settings too strict") {
-          history.unshift(p);
-        }
+        if (p) history.unshift(p);
       }
       history = history.slice(0, state.historyCount);
       saveHistoryState();
@@ -849,11 +1053,11 @@
         const btn = document.createElement("button");
         btn.className = "text-btn";
         btn.type = "button";
-        btn.textContent = "copy";
+        btn.textContent = t("itemCopy");
         btn.addEventListener("click", async () => {
           try { await navigator.clipboard.writeText(pw); }
           catch {}
-          showToast("copied");
+          showToast(t("toastCopied"));
         });
         li.appendChild(text);
         li.appendChild(btn);
@@ -881,7 +1085,7 @@
         document.execCommand("copy");
         window.getSelection().removeAllRanges();
       }
-      showToast("copied");
+      showToast(t("toastCopied"));
       pushToHistory(text.split("\n").filter(Boolean));
     }
 
@@ -897,7 +1101,7 @@
       btn.addEventListener("click", () => {
         const types = ["upper", "lower", "number", "symbol"];
         if (types.includes(key) && state[key] && types.every((k) => k === key || !state[k])) {
-          showToast("keep at least one");
+          showToast(t("toastKeepOne"));
           return;
         }
         state[key] = !state[key];
@@ -948,7 +1152,7 @@
 
     el.refresh.addEventListener("click", () => {
       render();
-      pushToHistory([el.password.value]);
+      if (state.displayState === "password") pushToHistory([el.password.value]);
     });
     el.copy.addEventListener("click", copyPassword);
 
@@ -981,8 +1185,13 @@
     // Theme toggle (Light / Dark): session-only, and captured in the settings URL
     el.themeToggle.addEventListener("click", () => setTheme(state.theme === "dark" ? "light" : "dark"));
 
+    // Language picker: overrides the auto-detected language and rides in the settings URL
+    el.langSelect.addEventListener("change", () => setLang(el.langSelect.value, true));
+
     // Apply settings from ?... URL params first, so they win over hardcoded defaults
     loadSettingsFromURL();
+    if (!state.langPinned) state.lang = detectLang();
+    setLang(state.lang, state.langPinned);
     setTheme(state.theme);
 
     // Initialize history UI from localStorage
