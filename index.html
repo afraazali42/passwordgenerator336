@@ -406,6 +406,11 @@
     @media (max-width: 600px) {
       body { padding: 32px 20px 50px; }
       .wordmark { font-size: 22px; }
+      /* Entropy readout drops to its own line so it stops crowding the slider row */
+      .length-section { flex-wrap: wrap; }
+      .length-section .strength { flex-basis: 100%; text-align: right; }
+      /* 16px inputs stop iOS Safari auto-zooming when a field is tapped */
+      .charset, .count-input, .length-value, .bulk-textarea { font-size: 16px; }
     }
   </style>
 </head>
