@@ -83,23 +83,6 @@ attempted. You can watch this in your browser's Network tab, or simply save the
 file and run it with no internet connection. The only thing ever written to your
 device is the optional history list, and only when you turn it on.
 
-## Run locally
-
-It's one file. Open `index.html` in any modern browser.
-
-For a local dev server:
-
-```sh
-python3 -m http.server 8765
-```
-
-Then open <http://localhost:8765>.
-
-## Deploy
-
-Drop `index.html` at the root of any static host (Cloudflare Pages, GitHub
-Pages, Netlify, your own VPS, etc.). There is nothing to build.
-
 ## Privacy
 
 All password generation happens in your browser. No password is ever sent over
