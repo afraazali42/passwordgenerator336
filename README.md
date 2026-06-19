@@ -93,4 +93,4 @@ collection. Full details in the
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[GPL-3.0](LICENSE)
