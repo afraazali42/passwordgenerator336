@@ -158,15 +158,35 @@
     const root = document.documentElement;
     const toggle = document.getElementById("themeToggle");
     const tc = document.querySelector('meta[name="theme-color"]');
-    function setTheme(theme) {
-      const light = theme === "light";
-      if (light) root.setAttribute("data-theme", "light");
-      else root.removeAttribute("data-theme");
-      toggle.textContent = light ? "Dark" : "Light";
-      toggle.setAttribute("aria-label", "Switch to " + (light ? "dark" : "light") + " mode");
-      if (tc) tc.setAttribute("content", light ? "#f5f4f0" : "#1a1a1a");
+    const params = new URLSearchParams(location.search);
+    let theme = params.get("theme") === "light" ? "light" : "dark";
+    const lang = params.get("lang") || "";
+
+    // Theme + language live in the URL only (no localStorage). Read them on load,
+    // mirror them to the address bar (so a refresh keeps the look), and carry them
+    // on the links back to the generator (so they survive navigating between pages).
+    function navQuery() {
+      const p = new URLSearchParams();
+      if (theme === "light") p.set("theme", "light");
+      if (lang && lang !== "en") p.set("lang", lang);
+      const qs = p.toString();
+      return qs ? "?" + qs : "";
     }
-    toggle.addEventListener("click", () => setTheme(root.getAttribute("data-theme") === "light" ? "dark" : "light"));
+    function setTheme(t) {
+      theme = t === "light" ? "light" : "dark";
+      if (theme === "light") root.setAttribute("data-theme", "light");
+      else root.removeAttribute("data-theme");
+      toggle.textContent = theme === "light" ? "Dark" : "Light";
+      toggle.setAttribute("aria-label", "Switch to " + (theme === "light" ? "dark" : "light") + " mode");
+      if (tc) tc.setAttribute("content", theme === "light" ? "#f5f4f0" : "#1a1a1a");
+    }
+    function sync() {
+      try { history.replaceState(null, "", location.pathname + navQuery()); } catch (e) {}
+      document.querySelectorAll('a[href^="/"]').forEach((a) => a.setAttribute("href", "/" + navQuery()));
+    }
+    setTheme(theme);
+    sync();
+    toggle.addEventListener("click", () => { setTheme(theme === "light" ? "dark" : "light"); sync(); });
   </script>
 </body>
 </html>

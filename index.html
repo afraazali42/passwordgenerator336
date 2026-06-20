@@ -951,6 +951,29 @@
       if (tc) tc.setAttribute("content", state.theme === "light" ? "#f5f4f0" : "#1a1a1a");
     }
 
+    // Theme + language live in the URL only (no localStorage). navQuery() is the
+    // theme/lang query string; mirror it to the address bar (so a refresh keeps
+    // the look) and onto the Privacy link (so it carries across pages).
+    function navQuery() {
+      const p = new URLSearchParams();
+      if (state.theme === "light") p.set("theme", "light");
+      if (state.lang !== "en") p.set("lang", state.lang);
+      const qs = p.toString();
+      return qs ? "?" + qs : "";
+    }
+    function updateNavLinks() {
+      const privacyLink = document.querySelector('.footer-left a[href^="privacy"]');
+      if (privacyLink) privacyLink.setAttribute("href", "privacy.html" + navQuery());
+    }
+    function persistThemeLang() {
+      const params = new URLSearchParams(location.search);
+      if (state.theme === "light") params.set("theme", "light"); else params.delete("theme");
+      if (state.lang !== "en") params.set("lang", state.lang); else params.delete("lang");
+      const qs = params.toString();
+      try { history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "")); } catch (e) {}
+      updateNavLinks();
+    }
+
     // i18n: look up a string in the current language, falling back to English
     function t(key) {
       return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
@@ -1301,17 +1324,18 @@
 
     el.copySettingsUrl.addEventListener("click", copySettingsUrl);
 
-    // Theme toggle (Light / Dark): session-only, and captured in the settings URL
-    el.themeToggle.addEventListener("click", () => setTheme(state.theme === "dark" ? "light" : "dark"));
+    // Theme toggle (Light / Dark): no localStorage — the choice persists via the URL
+    el.themeToggle.addEventListener("click", () => { setTheme(state.theme === "dark" ? "light" : "dark"); persistThemeLang(); });
 
-    // Language picker: overrides the auto-detected language and rides in the settings URL
-    el.langSelect.addEventListener("change", () => setLang(el.langSelect.value, true));
+    // Language picker: overrides the auto-detected language and persists via the URL
+    el.langSelect.addEventListener("change", () => { setLang(el.langSelect.value, true); persistThemeLang(); });
 
     // Apply settings from ?... URL params first, so they win over hardcoded defaults
     loadSettingsFromURL();
     if (!state.langPinned) state.lang = detectLang();
     setLang(state.lang, state.langPinned);
     setTheme(state.theme);
+    updateNavLinks();
 
     // Initialize history UI from localStorage
     loadHistoryState();
