@@ -358,9 +358,12 @@
     }
     .toggle.on { background: var(--accent); border-color: var(--accent); }
     .toggle.on::after { background: var(--on-accent); transform: translateX(18px); }
-    /* Light mode keeps the brighter teal on the toggles: the text accent is darkened
-       for contrast, but the toggles are UI (not text) and read better with more pop. */
+    /* Light mode keeps the brighter teal on the interactive controls (toggle pills +
+       slider thumb): the text accent is darkened for contrast, but these are UI, not
+       text, and read better with the old pop. */
     :root[data-theme="light"] .toggle.on { background: #0a8585; border-color: #0a8585; }
+    :root[data-theme="light"] input[type="range"]::-webkit-slider-thumb { background: #0a8585; }
+    :root[data-theme="light"] input[type="range"]::-moz-range-thumb { background: #0a8585; }
 
     .site-footer {
       width: 100%;
