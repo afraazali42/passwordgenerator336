@@ -5,18 +5,6 @@
 A fast, private password generator. One static HTML file. No build step, no
 dependencies, no backend.
 
-## What it does
-
-- Generates strong passwords entirely in the browser using the
-  [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues).
-- Customizable: length (4-64), character sets (with editable contents per set),
-  exclude characters, start-with-letter, no-duplicates, no-sequential, auto-select.
-- Bulk generation up to 100 at a time.
-- Optional history (stored locally in your browser only, never sent anywhere).
-- Light or dark theme.
-- Available in 18 languages, auto-detected from the browser (with a manual picker).
-- Shareable settings URL: bookmark your exact configuration, including theme and language.
-
 ## How it works
 
 The whole point of this tool is that you can check these claims yourself. The
