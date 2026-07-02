@@ -61,6 +61,4 @@ than the last (sampling without replacement). The readout instead sums
 `log2(choices)` across every position, so the bit count reflects the keyspace an
 attacker would really face.
 
-## License
-
-[GPL-3.0](LICENSE)
+## License: [GPL-3.0](LICENSE)
