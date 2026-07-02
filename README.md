@@ -2,9 +2,6 @@
 
 **Live at [passwordgenerator336.com](https://passwordgenerator336.com)**
 
-A fast, private password generator. One static HTML file. No build step, no
-dependencies, no backend.
-
 ## How it works
 
 The whole point of this tool is that you can check these claims yourself. The
