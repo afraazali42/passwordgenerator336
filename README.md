@@ -1,6 +1,6 @@
-# Password Generator 336
-
-**Live at [passwordgenerator336.com](https://passwordgenerator336.com)**
+<h1>
+  <a href="https://passwordgenerator336.com"><img src="logo.svg" alt="" height="30" align="middle">&nbsp;PASSWORDGENERATOR336</a>
+</h1>
 
 ## How it works
 
