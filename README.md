@@ -1,4 +1,4 @@
-<a href="https://passwordgenerator336.com"><img src="logo.svg" alt="PASSWORDGENERATOR336" height="56"></a>
+<a href="https://passwordgenerator336.com"><img src="logo.svg?v=2" alt="PASSWORDGENERATOR336" height="56"></a>
 
 ## How it works
 
