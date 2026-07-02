@@ -36,19 +36,6 @@ every character ends up exactly equally likely. (This makes it a "Las Vegas"
 algorithm: always correct, with a running time that now and then takes an extra
 draw.)
 
-### Building a password that obeys your rules
-
-Each character is drawn from the combined pool of the sets you have switched on
-(uppercase, lowercase, numbers, symbols), minus anything in the exclude list. The
-optional rules are enforced while the password is assembled: a candidate is
-rejected and redrawn if it would repeat an earlier character (no-duplicates), land
-right beside the previous character in code order such as `ab` or `34`
-(no-sequential), or open the password as a non-letter (start-with-letter). If a
-configuration is impossible, for instance no-duplicates with a pool smaller than
-the requested length, it stops cleanly rather than looping forever. A final pass
-retries a handful of times so that every set you enabled actually shows up when
-there is room for it.
-
 ### Honest entropy
 
 The "Entropy: X bits" readout is calculated, not decorative. The naive estimate
